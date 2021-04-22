@@ -1,0 +1,39 @@
+version: "3"
+services:
+  frontend:
+    build:
+      context: frontend
+      dockerfile: dev.Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
+      - /usr/src/app/.next
+
+  backend:
+    build:
+      context: backend
+      dockerfile: dev.Dockerfile
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: todo
+      DB_USER: todo
+      DB_PASS: todo
+    ports:
+      - 8080:8080
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: todo
+      POSTGRES_PASSWORD: todo
+    ports:
+      - 5432:5432
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./pgdata:/var/lib/postgresql/data

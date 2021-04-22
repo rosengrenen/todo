@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import useSWR, { mutate } from "swr";
 
-const fetcher = (url) =>
-	axios.get("http://localhost:8080/api/" + url).then((res) => res.data);
+const fetcher = (url) => axios.get("/api/" + url).then((res) => res.data);
 
 const Home = () => {
 	const { data: todos, error } = useSWR("todos", fetcher);
@@ -24,7 +23,7 @@ const Home = () => {
 								checked={todo.done}
 								onChange={() => {
 									axios
-										.patch("http://localhost:8080/api/todos/" + todo.id, {
+										.patch("/api/todos/" + todo.id, {
 											done: !todo.done,
 										})
 										.then(() => {
@@ -42,11 +41,9 @@ const Home = () => {
 							</span>
 							<button
 								onClick={() => {
-									axios
-										.delete("http://localhost:8080/api/todos/" + todo.id)
-										.then(() => {
-											mutate("todos");
-										});
+									axios.delete("/api/todos/" + todo.id).then(() => {
+										mutate("todos");
+									});
 								}}
 							>
 								del
@@ -58,7 +55,7 @@ const Home = () => {
 					onSubmit={(e) => {
 						e.preventDefault();
 						axios
-							.post("http://localhost:8080/api/todos", {
+							.post("/api/todos", {
 								title: newTodoTitle,
 							})
 							.then(() => {

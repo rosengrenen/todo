@@ -1,3 +1,4 @@
+require("dotenv/config");
 const express = require("express");
 const { Client } = require("pg");
 var bodyParser = require("body-parser");
@@ -10,17 +11,13 @@ var cors = require("cors");
 	app.use(cors());
 
 	const client = new Client({
-		host: "localhost",
-		port: 5432,
-		database: "todo",
-		user: "todo",
-		password: "todo",
+		host: String(process.env.DB_HOST),
+		port: parseInt(process.env.DB_PORT, 10),
+		database: String(process.env.DB_NAME),
+		user: String(process.env.DB_USER),
+		password: String(process.env.DB_PASS),
 	});
 	await client.connect();
-
-	// const res1 = await client.query(
-	// 	`INSERT INTO todos (title) VALUES ('MOGGERS')`
-	// );
 
 	app.get("/api/todos", async (req, res) => {
 		const { rows } = await client.query("SELECT * FROM todos ORDER BY id ASC");
